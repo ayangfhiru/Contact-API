@@ -9,7 +9,7 @@ route.post('/city', async(req, res)=>{
         const citie = await new citieServices().addCities(req.body);
         res.json({
           status: "Success",
-          cities: citie,
+          City: citie,
         });
     } catch (error) {
         res.json({
@@ -24,7 +24,7 @@ route.get('/city', async(req, res)=>{
         const citie = await new citieServices().getCities();
         res.json({
           status: "Success",
-          cities: citie,
+          city: citie,
         });
     } catch (error) {
         res.json({
@@ -38,9 +38,22 @@ route.get('/city/:id', async(req, res)=>{
     try {
         const citieId = req.params.id;
         const citie = await new citieServices().getCitiesById(citieId);
+        const contact = await new citieServices().getBloodAndContactByIdCitie(citieId)
+
+        const maping = {
+            id: citie.id,
+            name: citie.name,
+            countPeople: contact.rowCount,
+            contacts: contact.rows.map(element => ({
+                id: element.id,
+                name: element.name,
+                address: element.address
+            }))
+        }
+
         res.json({
           status: "Success",
-          cities: citie,
+          city: maping,
         });        
     } catch (error) {
         res.json({
@@ -57,7 +70,7 @@ route.put('/city/:id', async(req, res)=>{
         const citie = await new citieServices().putCites(citieId, req.body);
         res.json({
           stauts: "Success",
-          cities: `Berhasil mengedit City dengan Id ${citieId}`,
+          message: `Berhasil mengedit City dengan Id ${citieId}`,
         });
     } catch (error) {
         res.json({

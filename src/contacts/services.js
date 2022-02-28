@@ -46,10 +46,10 @@ class contactsServices{
         return result.rows;
     }
 
-    async putContact(id, {name, address, number}){
+    async putContact(id, {name, address, ph_number}){
         const query = {
-            text: 'UPDATE INTO contacts VALUES ($1, $2, $3) WHERE id = $4',
-            values: [name, address, number, id]
+            text: 'UPDATE contacts SET name = $1, address = $2, ph_number = $3 WHERE id = $4',
+            values: [name, address, ph_number, id]
         }
         const result = await this.pool.query(query);
         if(!result.rows){
