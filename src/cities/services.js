@@ -38,7 +38,17 @@ class citiesServices{
         if(!result.rows.length){
             throw new Error ('Id Salah')
         }
-        return result.rows;
+        return result.rows[0];
+    }
+
+    async getBloodAndContactByIdCitie(id){
+        const query = {
+          text: `SELECT C.* FROM cities I JOIN contacts C ON I.id = C.city
+          WHERE I.id = $1`,
+          values: [id],
+        };
+        const result = await this.pool.query(query);
+        return result;
     }
 
     async putCites(id, {name}){

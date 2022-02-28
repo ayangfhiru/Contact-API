@@ -57,7 +57,7 @@ route.put('/contact/:id', async(req, res)=>{
         const contact = await new contactServices().putContact(contactId, req.body);
         res.json({
             status: 'Success',
-            contacts: contact
+            message: `Berhasil update contact dengan Id ${contactId}`
         })
     } catch (error) {
         res.json({

@@ -14,33 +14,53 @@ class bloodsServices{
             values: [bloodId, name]
         };
         const result = await this.pool.query(query);
+        if(!result){
+            throw new Error ('Gagal menambahkan Blood')
+        }
         return result.rows;
     }
 
     async getBloods(){
         const query = 'SELECT * FROM bloods';
         const result = await this.pool.query(query);
+        if(!result){
+            throw new Error ('Gagal menampilakan Bloods')
+        }
         return result.rows;
     }
 
     async getBloodsById(id){
         const query = {
-            text: `SELECT C.id, C.name, C.city AS I.name FROM bloods B 
-            JOIN contacts C ON C.blood = B.id JOIN cities I ON C.city = I.id
-            WHERE B.id = $1`,
-            values: [id]
-        }
+          text: `SELECT * FROM bloods WHERE id = $1`,
+          values: [id]
+        };
         const result = await this.pool.query(query);
-        return result.rows;
+        if(!result.rows[0]){
+            throw new Error (`Gagal menampilkan Blood dengan Id ${id}`)
+        }
+        return result.rows[0];
     }
 
-    async deleteBloods(id){
+    async getCitieAndContactByIdBlood(id){
         const query = {
-            text: 'DELETE FROM bloods WHERE id = $1',
-            values: [id]
+          text: `SELECT C.id, C.name, I.name AS city FROM bloods B JOIN contacts C ON B.id = C.blood 
+          JOIN cities I ON C.city = I.id WHERE B.id = $1`,
+          values: [id]
+        };
+        const result = await this.pool.query(query);
+        if(!result){
+            throw new Error (`Gagal menampilkan data dengan Id Blood ${id}`)
         }
-        const result = await this.pool.query(query)
+        return result;
     }
+
+    // async deleteBloods(id){
+    //     const query = {
+    //         text: 'DELETE FROM bloods WHERE id = $1',
+    //         values: [id]
+    //     }
+    //     const result = await this.pool.query(query)
+    // }
 }
 
 module.exports = bloodsServices;
